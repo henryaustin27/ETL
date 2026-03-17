@@ -1,0 +1,9 @@
+trigger:
+- dev_02
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- script: echo Hello from Azure DevOps on Windows agent
+  displayName: 'Run a one-line script'
