@@ -161,7 +161,7 @@
 				"activities": [
 					{
 						"name": "Copy employee",
-						"description": "test",
+						"description": "test1",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
