@@ -5,8 +5,10 @@ trigger:
     include:
       - dev_02
 
+pr: none
+
 pool:
-  vmImage: 'windows-latest'
+  vmImage: windows-latest
 
 variables:
   - group: Dev
@@ -17,117 +19,124 @@ variables:
   - name: packageJsonFolder
     value: '$(Build.Repository.LocalPath)'
 
+  - name: armOutputFolder
+    value: '$(Build.Repository.LocalPath)\ArmTemplate'
+
+  - name: armArtifactName
+    value: 'ArmTemplates'
+
   - name: sourceFactoryId
     value: '/subscriptions/$(kvSubscriptionIdDev)/resourceGroups/$(kvResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(kvDataFactoryDev)'
-
-  - name: armOutputFolder
-    value: '$(Build.Repository.LocalPath)/ArmTemplate'
 
 stages:
 - stage: Build
   displayName: Build ARM Templates
   jobs:
   - job: BuildADF
-    displayName: Validate and Export ARM
+    displayName: Validate and Export ADF ARM
     steps:
     - checkout: self
       clean: true
 
     - task: UseNode@1
-      displayName: Install Node.js 20
+      displayName: Use Node.js 20
       inputs:
         version: '20.x'
 
     - task: Npm@1
-      displayName: Install npm packages
+      displayName: Install npm dependencies
       inputs:
-        command: 'install'
+        command: install
         workingDir: '$(packageJsonFolder)'
         verbose: true
 
     - task: Npm@1
-      displayName: Validate and Generate ARM template
+      displayName: Validate and export ARM template
       inputs:
-        command: 'custom'
+        command: custom
         workingDir: '$(packageJsonFolder)'
         customCommand: 'run build export "$(adfRootFolder)" "$(sourceFactoryId)" "ArmTemplate"'
 
+    - script: |
+        echo Listing ARM output files
+        dir "$(armOutputFolder)" /s
+      displayName: List generated ARM files
+
     - task: PublishPipelineArtifact@1
-      displayName: Publish ARM templates
+      displayName: Publish ARM artifact
       inputs:
         targetPath: '$(armOutputFolder)'
-        artifact: 'ArmTemplates'
-        publishLocation: 'pipeline'
+        artifact: '$(armArtifactName)'
+        publishLocation: pipeline
 
-- stage: DeployToDEV
+- stage: Deploy_Dev
   displayName: Deploy to DEV
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev_02'))
   jobs:
   - deployment: DeployADFDev
     displayName: Deploy ADF to DEV
-    environment: 'DEV'
+    environment: DEV
     strategy:
       runOnce:
         deploy:
           steps:
-          - checkout: self
-            clean: true
+          - checkout: none
 
           - task: DownloadPipelineArtifact@2
-            displayName: Download ARM templates
+            displayName: Download ARM artifact
             inputs:
-              artifact: 'ArmTemplates'
-              path: '$(Pipeline.Workspace)/ArmTemplates'
+              artifact: '$(armArtifactName)'
+              path: '$(Pipeline.Workspace)\$(armArtifactName)'
 
           - script: |
-              echo "Listing downloaded ARM template files"
-              dir "$(Pipeline.Workspace)\ArmTemplates" /s
-            displayName: 'List ARM artifact files'
+              echo Listing downloaded ARM artifact files
+              dir "$(Pipeline.Workspace)\$(armArtifactName)" /s
+            displayName: List downloaded ARM files
 
           - task: AzurePowerShell@5
             displayName: Stop modified triggers
             inputs:
               azureSubscription: 'adf-devops-connection-dev'
-              ScriptType: 'FilePath'
-              ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+              ScriptType: FilePath
+              ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
-                -armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json"
+                -armTemplate "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json"
                 -ResourceGroupName "$(kvResourceGroupDev)"
                 -DataFactoryName "$(kvDataFactoryDev)"
                 -predeployment $true
                 -deleteDeployment $false
-              azurePowerShellVersion: 'LatestVersion'
+              azurePowerShellVersion: LatestVersion
               pwsh: true
 
           - task: AzurePowerShell@5
-            displayName: Deploy ARM template
+            displayName: Deploy ARM template to DEV
             inputs:
               azureSubscription: 'adf-devops-connection-dev'
-              ScriptType: 'InlineScript'
+              ScriptType: InlineScript
               Inline: |
                 New-AzResourceGroupDeployment `
                   -Name "ADF-DEV-$(Build.BuildId)" `
                   -ResourceGroupName "$(kvResourceGroupDev)" `
-                  -TemplateFile "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" `
-                  -TemplateParameterFile "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json" `
+                  -TemplateFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json" `
+                  -TemplateParameterFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateParametersForFactory.json" `
                   -factoryName "$(kvDataFactoryDev)" `
                   -Mode Incremental `
                   -Verbose
-              azurePowerShellVersion: 'LatestVersion'
+              azurePowerShellVersion: LatestVersion
               pwsh: true
 
           - task: AzurePowerShell@5
             displayName: Start modified triggers
             inputs:
               azureSubscription: 'adf-devops-connection-dev'
-              ScriptType: 'FilePath'
-              ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+              ScriptType: FilePath
+              ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
-                -armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json"
+                -armTemplate "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json"
                 -ResourceGroupName "$(kvResourceGroupDev)"
                 -DataFactoryName "$(kvDataFactoryDev)"
                 -predeployment $false
                 -deleteDeployment $false
-              azurePowerShellVersion: 'LatestVersion'
+              azurePowerShellVersion: LatestVersion
               pwsh: true
