@@ -1,9 +1,77 @@
+name: ADF_Deploy_$(date:yyyy)_$(date:MMdd)_$(rev:r)
 trigger:
-- dev_02
-
+  branches:
+    include:
+    - refs/heads/dev_02  
 pool:
   vmImage: 'windows-latest'
 
-steps:
-- script: echo Hello from Azure DevOps on Windows agent
-  displayName: 'Run a one-line script'
+variables:
+  
+  - group: Dev
+  - name: isDev
+    value: ${{startsWith(variables['Build.SourceBranch'], 'refs/heads/dev_02')}}
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps:
+    - script: |
+        echo "Build.SourceBranch: $(Build.SourceBranch)"
+        echo "isMaster: ${{variables.isMaster}}"
+        echo "isStage: ${{variables.isStage}}"
+        echo "isDev: ${{variables.isDev}}"
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'ADF Build'
+      inputs:
+        ArtifactName: drop
+
+- stage: DeployToDEV
+  dependsOn: Build
+  condition: ${{variables.isDev}}
+  jobs:
+  - job:
+    steps:
+    - script:  echo variable name DeployToDEV
+    - task: DownloadBuildArtifacts@1
+      displayName: 'Download Build Artifacts'
+      inputs:
+        artifactName: drop
+        itemPattern: 'drop/**'
+        
+    - task: liprec.vsts-publish-adf.toggle-adf-trigger.toggle-adf-trigger@2
+      displayName: 'Stop ADF Dev_Triggers'
+      inputs:
+        azureSubscription: 'adf-devops-connection-dev'
+        ResourceGroupName: '$(kvResourceGroupDev)'
+        DatafactoryName: '$(kvDataFactoryDev)'
+        TriggerStatus: stop
+        Continue: true
+
+    - task: liprec.vsts-publish-adf.deploy-adf-json.deploy-adf-json@2
+      displayName: 'Deploy JSON files to $(kvDataFactoryDev)'
+      inputs:
+        azureSubscription: 'adf-devops-connection-dev'
+        ResourceGroupName: '$(kvResourceGroupDev)'
+        DatafactoryName: '$(kvDataFactoryDev)'
+        ServicePath: '$(System.ArtifactsDirectory)/drop/linkedService'
+        DatasetPath: '$(System.ArtifactsDirectory)/drop/dataset'
+        PipelinePath: '$(System.ArtifactsDirectory)/drop/pipeline'
+        TriggerPath: '$(System.ArtifactsDirectory)/drop/trigger'
+        DataflowPath: '$(System.ArtifactsDirectory)/drop/dataflow'
+        Continue: true
+
+    - task: liprec.vsts-publish-adf.toggle-adf-trigger.toggle-adf-trigger@2
+      displayName: 'Start ADF Dev_Triggers'
+      inputs:
+        azureSubscription: 'adf-devops-connection-dev'
+        ResourceGroupName: '$(kvResourceGroupDev)'
+        DatafactoryName: '$(kvDataFactoryDev)'
+        TriggerStatus: start
+        Continue: true
