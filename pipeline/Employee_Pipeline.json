@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy employee",
-				"description": "",
+				"description": "abc",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -59,7 +59,7 @@
 			},
 			{
 				"name": "Wait",
-				"description": "",
+				"description": "abc",
 				"type": "Wait",
 				"dependsOn": [
 					{
