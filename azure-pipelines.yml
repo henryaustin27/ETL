@@ -1,3 +1,64 @@
+name: ADF_Deploy_$(Date:yyyy)_$(Date:MMdd)_$(Rev:r)
+
+trigger:
+  branches:
+    include:
+      - dev_02
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  - group: Dev
+
+  - name: adfRootFolder
+    value: '$(Build.Repository.LocalPath)'
+
+  - name: packageJsonFolder
+    value: '$(Build.Repository.LocalPath)'
+
+  - name: sourceFactoryId
+    value: '/subscriptions/$(kvSubscriptionIdDev)/resourceGroups/$(kvResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(kvDataFactoryDev)'
+
+  - name: armOutputFolder
+    value: '$(Build.Repository.LocalPath)/ArmTemplate'
+
+stages:
+- stage: Build
+  displayName: Build ARM Templates
+  jobs:
+  - job: BuildADF
+    displayName: Validate and Export ARM
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: UseNode@1
+      displayName: Install Node.js 20
+      inputs:
+        version: '20.x'
+
+    - task: Npm@1
+      displayName: Install npm packages
+      inputs:
+        command: 'install'
+        workingDir: '$(packageJsonFolder)'
+        verbose: true
+
+    - task: Npm@1
+      displayName: Validate and Generate ARM template
+      inputs:
+        command: 'custom'
+        workingDir: '$(packageJsonFolder)'
+        customCommand: 'run build export "$(adfRootFolder)" "$(sourceFactoryId)" "ArmTemplate"'
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish ARM templates
+      inputs:
+        targetPath: '$(armOutputFolder)'
+        artifact: 'ArmTemplates'
+        publishLocation: 'pipeline'
+
 - stage: DeployToDEV
   displayName: Deploy to DEV
   dependsOn: Build
