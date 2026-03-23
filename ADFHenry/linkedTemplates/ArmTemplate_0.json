@@ -161,7 +161,7 @@
 				"activities": [
 					{
 						"name": "Copy employee",
-						"description": "test1",
+						"description": "",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -218,7 +218,7 @@
 					},
 					{
 						"name": "Wait",
-						"description": "Wait henrys",
+						"description": "",
 						"type": "Wait",
 						"dependsOn": [
 							{
@@ -238,11 +238,49 @@
 					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"lastPublishTime": "2026-03-16T23:42:17Z"
+				"lastPublishTime": "2026-03-23T18:30:50Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_csv')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_emp1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Employee_Pipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-03-23T18:11:00",
+						"timeZone": "Eastern Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								2
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Employee_Pipeline')]"
 			]
 		}
 	]
