@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADFHenry"
+		},
+		"ls_storage_account_accountKey": {
+			"value": ""
+		},
+		"ls_kv_properties_typeProperties_baseUrl": {
+			"value": "https://kvhenry.vault.azure.net/"
+		},
+		"ls_sql_properties_typeProperties_server": {
+			"value": "sqlhenry.database.windows.net"
+		},
+		"ls_sql_properties_typeProperties_database": {
+			"value": "sqlhenry"
+		},
+		"ls_sql_properties_typeProperties_userName": {
+			"value": "adminsql"
+		},
+		"ls_storage_account_properties_typeProperties_url": {
+			"value": "https://henrysstorageccount.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
