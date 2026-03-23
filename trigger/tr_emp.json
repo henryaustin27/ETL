@@ -1,0 +1,32 @@
+{
+	"name": "tr_emp",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Employee_Pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2026-03-23T18:11:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						10
+					],
+					"hours": [
+						2
+					]
+				}
+			}
+		}
+	}
+}
