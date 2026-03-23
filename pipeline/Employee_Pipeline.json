@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy employee",
-				"description": "test1",
+				"description": "",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -59,7 +59,7 @@
 			},
 			{
 				"name": "Wait",
-				"description": "Wait henry123",
+				"description": "",
 				"type": "Wait",
 				"dependsOn": [
 					{
@@ -76,7 +76,7 @@
 			}
 		],
 		"annotations": [],
-		"lastPublishTime": "2026-03-16T23:42:17Z"
+		"lastPublishTime": "2026-03-23T18:30:50Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
