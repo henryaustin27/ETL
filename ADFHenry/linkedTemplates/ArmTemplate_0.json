@@ -215,6 +215,23 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Wait",
+						"description": "Wait henry",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "Copy employee",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
 					}
 				],
 				"policy": {
