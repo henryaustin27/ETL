@@ -59,7 +59,7 @@
 			},
 			{
 				"name": "Wait",
-				"description": "Wait henry",
+				"description": "Wait henrys",
 				"type": "Wait",
 				"dependsOn": [
 					{
