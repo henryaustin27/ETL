@@ -97,7 +97,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Stop modified triggers
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: FilePath
               ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
@@ -112,7 +112,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Deploy ARM template to DEV
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: InlineScript
               Inline: |
                 New-AzResourceGroupDeployment `
@@ -129,7 +129,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Start modified triggers
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: FilePath
               ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
