@@ -195,6 +195,12 @@ stages:
                   -TemplateFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json" `
                   -TemplateParameterFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateParametersForFactory.json" `
                   -factoryName "$(kvDataFactoryProd)" `
+                  -ls_kv_properties_typeProperties_baseUrl "$(prodKeyVaultBaseUrl)" `
+                  -ls_sql_properties_typeProperties_server "$(prodSqlServerName)" `
+                  -ls_sql_properties_typeProperties_database "$(prodSqlDatabaseName)" `
+                  -ls_sql_properties_typeProperties_userName "$(prodSqlUserName)" `
+                  -ls_storage_account_properties_typeProperties_url "$(prodStorageUrl)" `
+                  -ls_storage_account_accountKey "$(prodStorageAccountKey)" `
                   -Mode Incremental `
                   -Verbose
               azurePowerShellVersion: LatestVersion
