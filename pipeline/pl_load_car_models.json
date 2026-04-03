@@ -62,7 +62,7 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['Make']"
+									"path": "['Make']"
 								},
 								"sink": {
 									"name": "Make",
@@ -71,7 +71,7 @@
 							},
 							{
 								"source": {
-									"path": "$['CityMPG']"
+									"path": "['CityMPG']"
 								},
 								"sink": {
 									"name": "CityMPG",
@@ -80,7 +80,7 @@
 							},
 							{
 								"source": {
-									"path": "$['HighwMPG']"
+									"path": "['HighwMPG']"
 								},
 								"sink": {
 									"name": "HighwMPG",
@@ -89,7 +89,7 @@
 							},
 							{
 								"source": {
-									"path": "$['CombMPG']"
+									"path": "['CombMPG']"
 								},
 								"sink": {
 									"name": "CombMPG",
@@ -98,7 +98,7 @@
 							},
 							{
 								"source": {
-									"path": "$['CityELEC']"
+									"path": "['CityELEC']"
 								},
 								"sink": {
 									"name": "CityELEC",
@@ -107,7 +107,7 @@
 							},
 							{
 								"source": {
-									"path": "$['HighwELEC']"
+									"path": "['HighwELEC']"
 								},
 								"sink": {
 									"name": "HighwELEC",
@@ -116,7 +116,7 @@
 							},
 							{
 								"source": {
-									"path": "$['CombELEC']"
+									"path": "['CombELEC']"
 								},
 								"sink": {
 									"name": "CombELEC",
@@ -125,7 +125,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Cyl']"
+									"path": "['Cyl']"
 								},
 								"sink": {
 									"name": "Cyl",
@@ -134,7 +134,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Displace']"
+									"path": "['Displace']"
 								},
 								"sink": {
 									"name": "Displace",
@@ -143,7 +143,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Drive']"
+									"path": "['Drive']"
 								},
 								"sink": {
 									"name": "Drive",
@@ -152,7 +152,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Fuel']"
+									"path": "['Fuel']"
 								},
 								"sink": {
 									"name": "Fuel",
@@ -161,7 +161,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Trans']"
+									"path": "['Trans']"
 								},
 								"sink": {
 									"name": "Trans",
@@ -170,7 +170,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Size']"
+									"path": "['Size']"
 								},
 								"sink": {
 									"name": "Size",
@@ -179,7 +179,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Year']"
+									"path": "['Year']"
 								},
 								"sink": {
 									"name": "Year",
@@ -188,7 +188,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Trim']"
+									"path": "['Trim']"
 								},
 								"sink": {
 									"name": "Trim",
@@ -197,7 +197,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Model']"
+									"path": "['Model']"
 								},
 								"sink": {
 									"name": "Model",
