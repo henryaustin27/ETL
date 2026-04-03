@@ -1,6 +1,216 @@
 {
 	"name": "pl_load_car_models",
 	"properties": {
+		"activities": [
+			{
+				"name": "Copy_CarModels_API_To_SQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Make']"
+								},
+								"sink": {
+									"name": "Make",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CityMPG']"
+								},
+								"sink": {
+									"name": "CityMPG",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['HighwMPG']"
+								},
+								"sink": {
+									"name": "HighwMPG",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CombMPG']"
+								},
+								"sink": {
+									"name": "CombMPG",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CityELEC']"
+								},
+								"sink": {
+									"name": "CityELEC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['HighwELEC']"
+								},
+								"sink": {
+									"name": "HighwELEC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CombELEC']"
+								},
+								"sink": {
+									"name": "CombELEC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Cyl']"
+								},
+								"sink": {
+									"name": "Cyl",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Displace']"
+								},
+								"sink": {
+									"name": "Displace",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Drive']"
+								},
+								"sink": {
+									"name": "Drive",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Fuel']"
+								},
+								"sink": {
+									"name": "Fuel",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Trans']"
+								},
+								"sink": {
+									"name": "Trans",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Size']"
+								},
+								"sink": {
+									"name": "Size",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Year']"
+								},
+								"sink": {
+									"name": "Year",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Trim']"
+								},
+								"sink": {
+									"name": "Trim",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Model']"
+								},
+								"sink": {
+									"name": "Model",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$.data.cars"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_apiverve_car",
+						"type": "DatasetReference",
+						"parameters": {
+							"make": {
+								"value": "@pipeline().parameters.make",
+								"type": "Expression"
+							},
+							"apikey": {
+								"value": "@pipeline().parameters.apikey",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sql_car_models",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"make": {
+				"type": "string",
+				"defaultValue": "Honda"
+			},
+			"apikey": {
+				"type": "string",
+				"defaultValue": "apv_9e7cf045-95ea-4a9a-9084-09b18101103f"
+			}
+		},
 		"annotations": []
 	}
 }
