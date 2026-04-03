@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://kvhenry.vault.azure.net/secrets/apiverve-api-key?api-version=7.5",
+					"url": "https://kvhenry.vault.azure.net/secrets/apiverve-x-api-key?api-version=7.5",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
