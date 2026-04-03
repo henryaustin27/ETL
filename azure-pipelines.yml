@@ -189,6 +189,14 @@ stages:
               azureSubscription: 'azure-devops-prod'
               ScriptType: InlineScript
               Inline: |
+                $rawStorageKey = "$(prodStorageAccountKey)"
+
+                if ([string]::IsNullOrWhiteSpace($rawStorageKey)) {
+                  throw "prodStorageAccountKey is empty or not loaded from the prod variable group."
+                }
+
+                $prodStorageKey = ConvertTo-SecureString $rawStorageKey -AsPlainText -Force
+
                 New-AzResourceGroupDeployment `
                   -Name "ADF-PROD-$(Build.BuildId)" `
                   -ResourceGroupName "$(kvResourceGroupProd)" `
