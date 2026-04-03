@@ -228,3 +228,17 @@ stages:
                 -deleteDeployment $false
               azurePowerShellVersion: LatestVersion
               pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: Disable specific PROD trigger
+            inputs:
+              azureSubscription: 'azure-devops-prod'
+              ScriptType: InlineScript
+              Inline: |
+                Stop-AzDataFactoryV2Trigger `
+                  -ResourceGroupName "$(kvResourceGroupProd)" `
+                  -DataFactoryName "$(kvDataFactoryProd)" `
+                  -Name "tr_emp1" `
+                  -Force
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
