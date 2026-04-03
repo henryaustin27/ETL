@@ -3,15 +3,43 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_CarModels_API_To_SQL",
-				"type": "Copy",
+				"name": "GetApiKey",
+				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 1,
 					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
+					"secureOutput": true,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kvhenry.vault.azure.net/secrets/apiverve-api-key?api-version=7.5",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Copy_CarModels_API_To_SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "GetApiKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": true
 				},
 				"userProperties": [],
 				"typeProperties": {
@@ -190,7 +218,7 @@
 								"type": "Expression"
 							},
 							"apikey": {
-								"value": "@pipeline().parameters.apikey",
+								"value": "@activity('GetApiKey').output.value",
 								"type": "Expression"
 							}
 						}
@@ -208,10 +236,6 @@
 			"make": {
 				"type": "string",
 				"defaultValue": "Honda"
-			},
-			"apikey": {
-				"type": "string",
-				"defaultValue": "apv_9e7cf045-95ea-4a9a-9084-09b18101103f"
 			}
 		},
 		"annotations": []
