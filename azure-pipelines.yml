@@ -200,7 +200,7 @@ stages:
                   -ls_sql_properties_typeProperties_database "$(prodSqlDatabaseName)" `
                   -ls_sql_properties_typeProperties_userName "$(prodSqlUserName)" `
                   -ls_storage_account_properties_typeProperties_url "$(prodStorageUrl)" `
-                  -ls_storage_account_accountKey "$(prodStorageAccountKey)" `
+                  -ls_storage_account_accountKey $prodStorageKey `
                   -Mode Incremental `
                   -Verbose
               azurePowerShellVersion: LatestVersion
