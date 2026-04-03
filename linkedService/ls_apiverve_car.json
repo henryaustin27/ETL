@@ -1,0 +1,31 @@
+{
+	"name": "ls_apiverve_car",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.apiverve.com",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"Content-Type": {
+					"type": "AzureKeyVaultSecret",
+					"store": {
+						"referenceName": "ls_kv",
+						"type": "LinkedServiceReference"
+					},
+					"secretName": "apivervecarcontenttype"
+				},
+				"x-api-key": {
+					"type": "AzureKeyVaultSecret",
+					"store": {
+						"referenceName": "ls_kv",
+						"type": "LinkedServiceReference"
+					},
+					"secretName": "apiverve-x-api-key"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}

@@ -1,0 +1,99 @@
+{
+	"name": "ds_sql_car_models",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Make",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CityMPG",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HighwMPG",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CombMPG",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CityELEC",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "HighwELEC",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "CombELEC",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "Cyl",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Displace",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "Drive",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Fuel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Trans",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Trim",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Model",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LoadDate",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CarModels"
+		}
+	}
+}
