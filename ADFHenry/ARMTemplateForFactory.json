@@ -44,7 +44,7 @@
 				"activities": [
 					{
 						"name": "Copy employee",
-						"description": "",
+						"description": "123",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -101,7 +101,7 @@
 					},
 					{
 						"name": "Wait",
-						"description": "",
+						"description": "123",
 						"type": "Wait",
 						"dependsOn": [
 							{
@@ -251,7 +251,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -270,7 +270,7 @@
 						"timeZone": "Eastern Standard Time",
 						"schedule": {
 							"minutes": [
-								30
+								40
 							],
 							"hours": [
 								2
