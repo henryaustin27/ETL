@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"method": "GET",
 					"url": {
-						"value": "@concat(pipeline().parameters.keyVaultBaseUrl, '/secrets/apiverve-api-key?api-version=7.5')",
+						"value": "@concat(pipeline().parameters.keyVaultBaseUrl, '/secrets/apiverve-x-api-key?api-version=7.5')",
 						"type": "Expression"
 					},
 					"authentication": {
