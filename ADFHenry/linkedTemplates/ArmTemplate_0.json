@@ -19,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "https://henrysstorageccount.dfs.core.windows.net/"
 		},
+		"ls_apiverve_car_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.apiverve.com"
+		},
 		"ls_sql_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "sqlhenry.database.windows.net"
@@ -105,6 +109,41 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_apiverve_car')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('ls_apiverve_car_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"Content-Type": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "ls_kv",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "apivervecarcontenttype"
+						},
+						"x-api-key": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "ls_kv",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "apiverve-x-api-key"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_kv')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_sql')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -133,6 +172,39 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_apiverve_car')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_apiverve_car",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"make": {
+						"type": "string",
+						"defaultValue": "Honda"
+					},
+					"apikey": {
+						"type": "string",
+						"defaultValue": "apv_9e7cf045-95ea-4a9a-9084-09b18101103f"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@concat('/v1/carmodels?make=', dataset().make)",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_apiverve_car')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_sql')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -147,6 +219,110 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "employee"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sql_car_models')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Make",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CityMPG",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "HighwMPG",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CombMPG",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CityELEC",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "HighwELEC",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "CombELEC",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "Cyl",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Displace",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "Drive",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Fuel",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Trans",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Trim",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Model",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LoadDate",
+						"type": "datetime2",
+						"scale": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "CarModels"
 				}
 			},
 			"dependsOn": [
@@ -243,6 +419,267 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_csv')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_load_car_models')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetApiKey",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": true,
+							"secureInput": true
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": {
+								"value": "@concat(pipeline().parameters.keyVaultBaseUrl, '/secrets/apiverve-x-api-key?api-version=7.5')",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "Copy_CarModels_API_To_SQL",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "GetApiKey",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": true,
+							"secureInput": true
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table dbo.CarModels",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['Make']"
+										},
+										"sink": {
+											"name": "Make",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['CityMPG']"
+										},
+										"sink": {
+											"name": "CityMPG",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['HighwMPG']"
+										},
+										"sink": {
+											"name": "HighwMPG",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['CombMPG']"
+										},
+										"sink": {
+											"name": "CombMPG",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['CityELEC']"
+										},
+										"sink": {
+											"name": "CityELEC",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['HighwELEC']"
+										},
+										"sink": {
+											"name": "HighwELEC",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['CombELEC']"
+										},
+										"sink": {
+											"name": "CombELEC",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Cyl']"
+										},
+										"sink": {
+											"name": "Cyl",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Displace']"
+										},
+										"sink": {
+											"name": "Displace",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Drive']"
+										},
+										"sink": {
+											"name": "Drive",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Fuel']"
+										},
+										"sink": {
+											"name": "Fuel",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Trans']"
+										},
+										"sink": {
+											"name": "Trans",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Size']"
+										},
+										"sink": {
+											"name": "Size",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Year']"
+										},
+										"sink": {
+											"name": "Year",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Trim']"
+										},
+										"sink": {
+											"name": "Trim",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['Model']"
+										},
+										"sink": {
+											"name": "Model",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$.data.cars"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_apiverve_car",
+								"type": "DatasetReference",
+								"parameters": {
+									"make": {
+										"value": "@pipeline().parameters.make",
+										"type": "Expression"
+									},
+									"apikey": {
+										"value": "@activity('GetApiKey').output.value",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sql_car_models",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"make": {
+						"type": "string",
+						"defaultValue": "Honda"
+					},
+					"keyVaultBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://kvhenry.vault.azure.net"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_apiverve_car')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sql_car_models')]"
 			]
 		},
 		{

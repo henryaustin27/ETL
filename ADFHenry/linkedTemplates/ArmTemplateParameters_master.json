@@ -8,6 +8,9 @@
 		"ls_storage_account_accountKey": {
 			"value": ""
 		},
+		"ls_apiverve_car_properties_typeProperties_url": {
+			"value": "https://api.apiverve.com"
+		},
 		"ls_kv_properties_typeProperties_baseUrl": {
 			"value": "https://kvhenry.vault.azure.net/"
 		},
