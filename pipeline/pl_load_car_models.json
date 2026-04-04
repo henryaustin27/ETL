@@ -16,7 +16,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://kvhenry.vault.azure.net/secrets/apiverve-x-api-key?api-version=7.5",
+					"url": {
+						"value": "@concat(pipeline().parameters.keyVaultBaseUrl, '/secrets/apiverve-x-api-key?api-version=7.5')",
+						"type": "Expression"
+					},
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
@@ -236,6 +239,10 @@
 			"make": {
 				"type": "string",
 				"defaultValue": "Honda"
+			},
+			"keyVaultBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://kvhenry.vault.azure.net"
 			}
 		},
 		"annotations": []
