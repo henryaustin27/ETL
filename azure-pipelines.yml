@@ -203,7 +203,6 @@ stages:
                   -TemplateFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json" `
                   -TemplateParameterFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateParametersForFactory.json" `
                   -factoryName "$(kvDataFactoryProd)" `
-                  -pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue "$(prodKeyVaultBaseUrl)" `
                   -ls_kv_properties_typeProperties_baseUrl "$(prodKeyVaultBaseUrl)" `
                   -ls_sql_properties_typeProperties_server "$(prodSqlServerName)" `
                   -ls_sql_properties_typeProperties_database "$(prodSqlDatabaseName)" `
