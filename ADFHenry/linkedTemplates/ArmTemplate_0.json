@@ -11,29 +11,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_storage_account'"
 		},
-		"ls_kv_properties_typeProperties_baseUrl": {
+		"pl_load_car_models_properties_parameters_make_defaultValue": {
 			"type": "string",
-			"defaultValue": "https://kvhenry.vault.azure.net/"
+			"defaultValue": "Honda"
 		},
-		"ls_storage_account_properties_typeProperties_url": {
+		"pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue": {
 			"type": "string",
-			"defaultValue": "https://henrysstorageccount.dfs.core.windows.net/"
-		},
-		"ls_apiverve_car_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://api.apiverve.com"
-		},
-		"ls_sql_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "sqlhenry.database.windows.net"
-		},
-		"ls_sql_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "sqlhenry"
-		},
-		"ls_sql_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "adminsql"
+			"defaultValue": "https://kvhenry.vault.azure.net"
 		}
 	},
 	"variables": {
@@ -48,7 +32,7 @@
 				"annotations": [],
 				"type": "AzureKeyVault",
 				"typeProperties": {
-					"baseUrl": "[parameters('ls_kv_properties_typeProperties_baseUrl')]"
+					"baseUrl": "https://kvhenry.vault.azure.net/"
 				}
 			},
 			"dependsOn": []
@@ -61,7 +45,7 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('ls_storage_account_properties_typeProperties_url')]",
+					"url": "https://henrysstorageccount.dfs.core.windows.net/",
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('ls_storage_account_accountKey')]"
@@ -116,7 +100,7 @@
 				"annotations": [],
 				"type": "RestService",
 				"typeProperties": {
-					"url": "[parameters('ls_apiverve_car_properties_typeProperties_url')]",
+					"url": "https://api.apiverve.com",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous",
 					"authHeaders": {
@@ -151,12 +135,12 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"server": "[parameters('ls_sql_properties_typeProperties_server')]",
-					"database": "[parameters('ls_sql_properties_typeProperties_database')]",
+					"server": "sqlhenry.database.windows.net",
+					"database": "sqlhenry",
 					"encrypt": "mandatory",
 					"trustServerCertificate": true,
 					"authenticationType": "SQL",
-					"userName": "[parameters('ls_sql_properties_typeProperties_userName')]",
+					"userName": "adminsql",
 					"password": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
@@ -429,6 +413,7 @@
 				"activities": [
 					{
 						"name": "GetApiKey",
+						"description": "test",
 						"type": "WebActivity",
 						"dependsOn": [],
 						"policy": {
@@ -668,11 +653,11 @@
 				"parameters": {
 					"make": {
 						"type": "string",
-						"defaultValue": "Honda"
+						"defaultValue": "[parameters('pl_load_car_models_properties_parameters_make_defaultValue')]"
 					},
 					"keyVaultBaseUrl": {
 						"type": "string",
-						"defaultValue": "https://kvhenry.vault.azure.net"
+						"defaultValue": "[parameters('pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue')]"
 					}
 				},
 				"annotations": []
