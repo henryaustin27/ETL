@@ -242,7 +242,7 @@
 			},
 			"keyVaultBaseUrl": {
 				"type": "string",
-				"defaultValue": "https://kvhenry.vault.azure.net"
+				"defaultValue": "https://kvhenryProd.vault.azure.net"
 			}
 		},
 		"annotations": []
