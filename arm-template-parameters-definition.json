@@ -1,9 +1,25 @@
 {
+  "Microsoft.DataFactory/factories/linkedServices": {
+    "*": {
+      "properties": {
+        "typeProperties": {
+          "accountKey": "|:-secureString",
+          "baseUrl": "=",
+          "url": "=",
+          "server": "=",
+          "database": "=",
+          "userName": "="
+        }
+      }
+    }
+  },
   "Microsoft.DataFactory/factories/pipelines": {
-    "properties": {
-      "parameters": {
-        "*": {
-          "defaultValue": "="
+    "*": {
+      "properties": {
+        "parameters": {
+          "*": {
+            "defaultValue": "="
+          }
         }
       }
     }
