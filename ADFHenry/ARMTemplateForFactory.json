@@ -11,13 +11,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_storage_account'"
 		},
-		"pl_load_car_models_properties_parameters_make_defaultValue": {
+		"ls_apiverve_car_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "Honda"
+			"defaultValue": "https://api.apiverve.com"
 		},
-		"pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue": {
+		"ls_kv_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://kvhenry.vault.azure.net"
+			"defaultValue": "https://kvhenry.vault.azure.net/"
+		},
+		"ls_sql_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlhenry.database.windows.net"
+		},
+		"ls_sql_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqlhenry"
+		},
+		"ls_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"ls_storage_account_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://henrysstorageccount.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -364,11 +380,11 @@
 				"parameters": {
 					"make": {
 						"type": "string",
-						"defaultValue": "[parameters('pl_load_car_models_properties_parameters_make_defaultValue')]"
+						"defaultValue": "Honda"
 					},
 					"keyVaultBaseUrl": {
 						"type": "string",
-						"defaultValue": "[parameters('pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue')]"
+						"defaultValue": "https://kvhenry.vault.azure.net"
 					}
 				},
 				"annotations": []
@@ -582,7 +598,7 @@
 				"annotations": [],
 				"type": "RestService",
 				"typeProperties": {
-					"url": "https://api.apiverve.com",
+					"url": "[parameters('ls_apiverve_car_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous",
 					"authHeaders": {
@@ -617,7 +633,7 @@
 				"annotations": [],
 				"type": "AzureKeyVault",
 				"typeProperties": {
-					"baseUrl": "https://kvhenry.vault.azure.net/"
+					"baseUrl": "[parameters('ls_kv_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -630,12 +646,12 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"server": "sqlhenry.database.windows.net",
-					"database": "sqlhenry",
+					"server": "[parameters('ls_sql_properties_typeProperties_server')]",
+					"database": "[parameters('ls_sql_properties_typeProperties_database')]",
 					"encrypt": "mandatory",
 					"trustServerCertificate": true,
 					"authenticationType": "SQL",
-					"userName": "adminsql",
+					"userName": "[parameters('ls_sql_properties_typeProperties_userName')]",
 					"password": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
@@ -658,7 +674,7 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "https://henrysstorageccount.dfs.core.windows.net/",
+					"url": "[parameters('ls_storage_account_properties_typeProperties_url')]",
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('ls_storage_account_accountKey')]"

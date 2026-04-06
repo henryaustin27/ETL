@@ -8,11 +8,23 @@
 		"ls_storage_account_accountKey": {
 			"value": ""
 		},
-		"pl_load_car_models_properties_parameters_make_defaultValue": {
-			"value": "Honda"
+		"ls_apiverve_car_properties_typeProperties_url": {
+			"value": "https://api.apiverve.com"
 		},
-		"pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue": {
-			"value": "https://kvhenry.vault.azure.net"
+		"ls_kv_properties_typeProperties_baseUrl": {
+			"value": "https://kvhenry.vault.azure.net/"
+		},
+		"ls_sql_properties_typeProperties_server": {
+			"value": "sqlhenry.database.windows.net"
+		},
+		"ls_sql_properties_typeProperties_database": {
+			"value": "sqlhenry"
+		},
+		"ls_sql_properties_typeProperties_userName": {
+			"value": "adminsql"
+		},
+		"ls_storage_account_properties_typeProperties_url": {
+			"value": "https://henrysstorageccount.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""

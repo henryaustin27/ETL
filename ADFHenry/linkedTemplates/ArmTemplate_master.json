@@ -11,13 +11,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_storage_account'"
 		},
-		"pl_load_car_models_properties_parameters_make_defaultValue": {
+		"ls_apiverve_car_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "Honda"
+			"defaultValue": "https://api.apiverve.com"
 		},
-		"pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue": {
+		"ls_kv_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://kvhenry.vault.azure.net"
+			"defaultValue": "https://kvhenry.vault.azure.net/"
+		},
+		"ls_sql_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlhenry.database.windows.net"
+		},
+		"ls_sql_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqlhenry"
+		},
+		"ls_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"ls_storage_account_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://henrysstorageccount.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -49,11 +65,23 @@
 					"ls_storage_account_accountKey": {
 						"value": "[parameters('ls_storage_account_accountKey')]"
 					},
-					"pl_load_car_models_properties_parameters_make_defaultValue": {
-						"value": "[parameters('pl_load_car_models_properties_parameters_make_defaultValue')]"
+					"ls_kv_properties_typeProperties_baseUrl": {
+						"value": "[parameters('ls_kv_properties_typeProperties_baseUrl')]"
 					},
-					"pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue": {
-						"value": "[parameters('pl_load_car_models_properties_parameters_keyVaultBaseUrl_defaultValue')]"
+					"ls_storage_account_properties_typeProperties_url": {
+						"value": "[parameters('ls_storage_account_properties_typeProperties_url')]"
+					},
+					"ls_apiverve_car_properties_typeProperties_url": {
+						"value": "[parameters('ls_apiverve_car_properties_typeProperties_url')]"
+					},
+					"ls_sql_properties_typeProperties_server": {
+						"value": "[parameters('ls_sql_properties_typeProperties_server')]"
+					},
+					"ls_sql_properties_typeProperties_database": {
+						"value": "[parameters('ls_sql_properties_typeProperties_database')]"
+					},
+					"ls_sql_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sql_properties_typeProperties_userName')]"
 					}
 				}
 			},
