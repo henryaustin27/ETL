@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "GetApiKey",
+				"description": "test",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
