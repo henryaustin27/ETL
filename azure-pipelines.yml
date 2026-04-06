@@ -97,7 +97,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Stop modified triggers
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: FilePath
               ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
@@ -112,7 +112,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Deploy ARM template to DEV
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: InlineScript
               Inline: |
                 New-AzResourceGroupDeployment `
@@ -129,7 +129,7 @@ stages:
           - task: AzurePowerShell@5
             displayName: Start modified triggers
             inputs:
-              azureSubscription: 'adf-devops-connection-dev'
+              azureSubscription: 'adf-devops-dev'
               ScriptType: FilePath
               ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
               ScriptArguments: >
@@ -138,5 +138,107 @@ stages:
                 -DataFactoryName "$(kvDataFactoryDev)"
                 -predeployment $false
                 -deleteDeployment $false
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+- stage: Deploy_Prod
+  displayName: Deploy to PROD
+  dependsOn: Deploy_Dev
+  condition: succeeded()
+  variables:
+    - group: prod
+  jobs:
+  - deployment: DeployADFProd
+    displayName: Deploy ADF to PROD
+    environment: PROD
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+
+          - task: DownloadPipelineArtifact@2
+            displayName: Download ARM artifact
+            inputs:
+              artifact: '$(armArtifactName)'
+              path: '$(Pipeline.Workspace)\$(armArtifactName)'
+
+          - script: |
+              echo Listing downloaded ARM artifact files
+              dir "$(Pipeline.Workspace)\$(armArtifactName)" /s
+            displayName: List downloaded ARM files
+
+          - task: AzurePowerShell@5
+            displayName: Stop modified triggers
+            inputs:
+              azureSubscription: 'azure-devops-prod'
+              ScriptType: FilePath
+              ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
+              ScriptArguments: >
+                -armTemplate "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json"
+                -ResourceGroupName "$(kvResourceGroupProd)"
+                -DataFactoryName "$(kvDataFactoryProd)"
+                -predeployment $true
+                -deleteDeployment $false
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: Deploy ARM template to PROD
+            inputs:
+              azureSubscription: 'azure-devops-prod'
+              ScriptType: InlineScript
+              Inline: |
+                $rawStorageKey = "$(prodStorageAccountKey)"
+
+                if ([string]::IsNullOrWhiteSpace($rawStorageKey)) {
+                  throw "prodStorageAccountKey is empty or not loaded from the prod variable group."
+                }
+
+                $prodStorageKey = ConvertTo-SecureString $rawStorageKey -AsPlainText -Force
+
+                New-AzResourceGroupDeployment `
+                  -Name "ADF-PROD-$(Build.BuildId)" `
+                  -ResourceGroupName "$(kvResourceGroupProd)" `
+                  -TemplateFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json" `
+                  -TemplateParameterFile "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateParametersForFactory.json" `
+                  -factoryName "$(kvDataFactoryProd)" `
+                  -ls_kv_properties_typeProperties_baseUrl "$(prodKeyVaultBaseUrl)" `
+                  -ls_sql_properties_typeProperties_server "$(prodSqlServerName)" `
+                  -ls_sql_properties_typeProperties_database "$(prodSqlDatabaseName)" `
+                  -ls_sql_properties_typeProperties_userName "$(prodSqlUserName)" `
+                  -ls_storage_account_properties_typeProperties_url "$(prodStorageUrl)" `
+                  -ls_storage_account_accountKey $prodStorageKey `
+                  -Mode Incremental `
+                  -Verbose
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: Start modified triggers
+            inputs:
+              azureSubscription: 'azure-devops-prod'
+              ScriptType: FilePath
+              ScriptPath: '$(Pipeline.Workspace)\$(armArtifactName)\PrePostDeploymentScript.ps1'
+              ScriptArguments: >
+                -armTemplate "$(Pipeline.Workspace)\$(armArtifactName)\ARMTemplateForFactory.json"
+                -ResourceGroupName "$(kvResourceGroupProd)"
+                -DataFactoryName "$(kvDataFactoryProd)"
+                -predeployment $false
+                -deleteDeployment $false
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: Disable specific PROD trigger
+            inputs:
+              azureSubscription: 'azure-devops-prod'
+              ScriptType: InlineScript
+              Inline: |
+                Stop-AzDataFactoryV2Trigger `
+                  -ResourceGroupName "$(kvResourceGroupProd)" `
+                  -DataFactoryName "$(kvDataFactoryProd)" `
+                  -Name "tr_emp1" `
+                  -Force
               azurePowerShellVersion: LatestVersion
               pwsh: true
