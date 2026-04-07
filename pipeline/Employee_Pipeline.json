@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy employee",
-				"description": "123",
+				"description": "456",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
