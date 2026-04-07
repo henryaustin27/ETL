@@ -9,7 +9,7 @@ namespace SimpleWebApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(new { message = "Welcome to SimpleWebApi Henry" });
+            return Ok(new { message = "Welcome to SimpleWebApi Henry Austin" });
         }
     }
 }
