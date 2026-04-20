@@ -246,6 +246,8 @@
 				"defaultValue": "https://kvhenry.vault.azure.net"
 			}
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2026-04-07T19:09:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
